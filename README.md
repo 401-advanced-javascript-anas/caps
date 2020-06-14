@@ -6,7 +6,7 @@
 
 ### Links and Resources
 
-- [submission PR]()
+- [submission PR](https://github.com/401-advanced-javascript-anas/caps/pull/1)
 - [Heroku]()
 
 
