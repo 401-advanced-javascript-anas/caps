@@ -11,14 +11,16 @@
 
 
 ### Modules
-#### `index.js`
+#### `events.js`
+#### `caps.js`
+#### `driver.js`
+#### `vender.js`
 
 ### Setup
 
 #### How to initialize/run your application 
 
-- `node index.js`
-- `nodemon`
+- `node caps.js`
 
 #### How to use your library 
 #### Tests
