@@ -1,64 +1,114 @@
 'use strict';
 
-const net = require('net');
-require('dotenv').config();
-const uuid = require('uuid').v4;
+const { connection } = require('mongoose');
 
-const PORT = process.env.PORT || 3000;
+const io = require('socket.io')(3000);
 
-const server = net.createServer(); 
-server.listen(PORT, ()=> console.log(`Server is up on ${PORT}`));
+io.on('connection', (socket)=>{
+  console.log('CORE', socket.id);
+  
+});
 
+const caps = io.of('/caps');
+caps.on('connection', (socket) =>{
+  console.log('conneted', socket.id);
 
-
-let socketPool = {}; // store the connected clients
-
-
-server.on('connection', (socket)=> {
+  socket.on('join', room =>{
+    console.log('registered as', room);
+    socket.join(room);
     
-  
-  const id = `Socket-${uuid}`;
+  });
 
-  // add the socket objec to the SocketPool Object
-  console.log(`client with ID : ${id} is connected!!! `);
+  socket.on('pickup', (payload)=>{
+    logIt('pickup', payload);
+    caps.emit('pickup', payload);
+  });
+  socket.on('in-transit', (payload)=>{
+    logIt('in-transit', payload);
+    caps.on(payload.store).emit('in-transit', payload);
+  });
+  socket.on('delivered', (payload)=>{
+    logIt('delivered', payload);
+    caps.to(payload.store).emit('delivered', payload);
 
-  socketPool[id] = socket;
-  // add subscriber to recieving data on the socket 
-  socket.on('data', (buffer)=> dispatchEvent(buffer));
-  
-  socket.on('error', (e) => {console.log('SOCKET ERR', e);});
-
-  socket.on('end', (end) => {
-    console.log('connection ended', end);
-    delete socketPool[id];
   });
 });
 
 
-server.on('error', (e)=> {
-  console.log('SERVER ERROR', e);
-});
-
-
-function dispatchEvent(buffer) {
-  console.log(' SERVER GOT your msg!!');
-  // I am recieving the msg, Buffer (Binary), 
-  // parse it to string
-  let message = JSON.parse(buffer.toString().trim());
-  console.log('message >> ',message);
-  // send a msg : broadcast a msg to all clients.
-  broadcast(message);
+function logIt(event, payload) {
+  let time = new Date();
+  console.log({event, time, payload});
 }
 
-function broadcast(msg) {
-  // Send the msg to all clients connected to you.
-  let payload = JSON.stringify(msg);
-  // We are sending the msg to all sockets by looping through them 
-  // and using the socket object that we saved previously.
-  for (let socket in socketPool) {
-    socketPool[socket].write(payload);
-  }
-}
+
+
+
+
+
+
+
+
+
+
+// const net = require('net');
+// require('dotenv').config();
+// const uuid = require('uuid').v4;
+
+// const PORT = process.env.PORT || 3000;
+
+// const server = net.createServer(); 
+// server.listen(PORT, ()=> console.log(`Server is up on ${PORT}`));
+
+
+
+// let socketPool = {}; // store the connected clients
+
+
+// server.on('connection', (socket)=> {
+    
+  
+//   const id = `Socket-${uuid}`;
+
+//   // add the socket objec to the SocketPool Object
+//   console.log(`client with ID : ${id} is connected!!! `);
+
+//   socketPool[id] = socket;
+//   // add subscriber to recieving data on the socket 
+//   socket.on('data', (buffer)=> dispatchEvent(buffer));
+  
+//   socket.on('error', (e) => {console.log('SOCKET ERR', e);});
+
+//   socket.on('end', (end) => {
+//     console.log('connection ended', end);
+//     delete socketPool[id];
+//   });
+// });
+
+
+// server.on('error', (e)=> {
+//   console.log('SERVER ERROR', e);
+// });
+
+
+// function dispatchEvent(buffer) {
+//   console.log(' SERVER GOT your msg!!');
+//   // I am recieving the msg, Buffer (Binary), 
+//   // parse it to string
+//   let message = JSON.parse(buffer.toString().trim());
+//   console.log('message >> ',message);
+//   // send a msg : broadcast a msg to all clients.
+//   broadcast(message);
+// }
+
+// function broadcast(msg) {
+//   // Send the msg to all clients connected to you.
+//   let payload = JSON.stringify(msg);
+//   // We are sending the msg to all sockets by looping through them 
+//   // and using the socket object that we saved previously.
+//   for (let socket in socketPool) {
+//     socketPool[socket].write(payload);
+//   }
+// }
 
 
 

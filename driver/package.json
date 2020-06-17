@@ -1,8 +1,8 @@
 {
-  "name": "caps",
+  "name": "driver",
   "version": "1.0.0",
   "description": "",
-  "main": "caps.js",
+  "main": "driver.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "faker": "^4.1.0",
-    "socket.io": "^2.3.0",
-    "uuid": "^8.1.0"
+    "inquirer": "^7.2.0",
+    "socket.io": "^2.3.0"
   }
 }
