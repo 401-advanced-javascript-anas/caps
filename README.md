@@ -6,19 +6,21 @@
 
 ### Links and Resources
 
-- [submission PR]()
+- [submission PR](https://github.com/401-advanced-javascript-anas/caps/pull/3)
 - [Heroku]()
 
 
 ### Modules
-#### `index.js`
+#### `events.js`
+#### `caps.js`
+#### `driver.js`
+#### `vender.js`
 
 ### Setup
 
 #### How to initialize/run your application 
 
-- `node index.js`
-- `nodemon`
+- `node caps.js`
 
 #### How to use your library 
 #### Tests
